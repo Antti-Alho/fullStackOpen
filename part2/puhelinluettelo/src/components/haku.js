@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const Haku = ({filter, setFilter, setPersonsToShow, persons }) => {
+const Haku = ({ setPersonsToShow, persons }) => {
+
+  const [filter, setFilter] = useState('')
 
   const HandleFilterChange = (event) => {
     setFilter(event.target.value)
-    setPersonsToShow( persons.filter( person => 
-      console.log(person.name) || person.name.includes(filter) 
-    ))
+    setPersonsToShow( persons.filter( person => {
+      person.name.toLowerCase().includes(filter.toLowerCase()) 
+    }))
   }
   return (
     <div>

@@ -1,17 +1,14 @@
 import React, { useState } from 'react'
 
-const Lisaa = ({setPersonsToShow, persons, setPersons }) => {
+const Lisaa = ({ persons, setPersons }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
-  const addNote = async (event) => {
+  const addName = async (event) => {
     event.preventDefault()
     persons.filter(person => person.name === newName).length === 0
     ? setPersons(persons.concat({ name: newName, number: newNumber })) 
     : alert(`${newName} is already in the phonebook`)
-    
-    console.log(persons)
-    setPersonsToShow(persons)
   }
 
   const handleNameChange = (event) => {
@@ -25,7 +22,7 @@ const Lisaa = ({setPersonsToShow, persons, setPersons }) => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addNote}>
+      <form onSubmit={addName}>
         <div>
           name:
           <input
