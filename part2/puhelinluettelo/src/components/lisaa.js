@@ -4,37 +4,33 @@ import ps from '../services/personService'
 const Lisaa = ({ persons, setPersons }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const handleNameChange = (event) => setNewName(event.target.value)
+  const handleNumberChange = (event) => setNewNumber(event.target.value)
 
   const addName = (event) => {
     event.preventDefault()
-    if ( persons.filter(person => person.name === newName).length === 0 ){
-      ps.createPerson({ name: newName, number: newNumber })
-      .then( () => { 
-        ps.getAllPersons()
-        .then( data => {
-          setPersons(data)
-        })
-      })
-    } else {
-      if (window.confirm(`${newName} is already in the phonebook, replace the old number with ne one ?`)){
-        const person = persons.find(element => element.name === newName)
-        ps.updatePerson(person.id, { name: newName, number: newNumber })
-        .then(() => {
-          ps.getAllPersons()
-          .then( data => {
-            setPersons(data)
-          })
-        })
-      }
+    persons.filter(person => person.name === newName).length === 0
+      ? create()
+      : update()
+  }
+
+  const create = () => {
+    console.log('asd')
+    ps.createPerson({ name: newName, number: newNumber })
+    .then( () => refresh() )
+  }
+
+  const update = () => {
+    if (window.confirm(`${newName} is already in the phonebook, replace the old number with ne one ?`)){
+      const person = persons.find(person => person.name === newName)
+      ps.updatePerson(person.id, { name: newName, number: newNumber })
+      .then( () => refresh() )
     }
   }
 
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
+  const refresh = () => {
+    ps.getAllPersons()
+    .then( data => setPersons(data) )
   }
 
   return (
@@ -60,7 +56,6 @@ const Lisaa = ({ persons, setPersons }) => {
       </form>
     </div>
   )
-
 }
 
 export default Lisaa
