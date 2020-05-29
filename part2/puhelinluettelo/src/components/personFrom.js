@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import ps from '../services/personService'
 
-const Lisaa = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, setMessage, setErrorStatus}) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
 
-  const addName = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     persons.filter(person => person.name === newName).length === 0
       ? create()
@@ -17,14 +17,30 @@ const Lisaa = ({ persons, setPersons }) => {
   const create = () => {
     console.log('asd')
     ps.createPerson({ name: newName, number: newNumber })
-    .then( () => refresh() )
+      .then( () => {
+        refresh() 
+        setMessage(`${newName} created`) 
+        setErrorStatus(false) 
+      })
+      .catch( error => {
+        setMessage(`Failed to create new person ${newName} ${error}`) 
+        setErrorStatus(true) 
+      })
   }
 
   const update = () => {
     if (window.confirm(`${newName} is already in the phonebook, replace the old number with ne one ?`)){
       const person = persons.find(person => person.name === newName)
       ps.updatePerson(person.id, { name: newName, number: newNumber })
-      .then( () => refresh() )
+        .then( () => { 
+          refresh()
+          setMessage(`${newName} number changed to ${newNumber}`)
+          setErrorStatus(false) 
+        })
+        .catch( error => {
+          setMessage(`Failed to edit person ${newName} ${error}`)
+          setErrorStatus(true)
+        })
     }
   }
 
@@ -35,8 +51,8 @@ const Lisaa = ({ persons, setPersons }) => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <form onSubmit={addName}>
+      <h2>Add / Edit</h2>
+      <form onSubmit={handleSubmit}>
         <div>
           name:
           <input
@@ -58,4 +74,4 @@ const Lisaa = ({ persons, setPersons }) => {
   )
 }
 
-export default Lisaa
+export default PersonForm

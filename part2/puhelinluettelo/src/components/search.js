@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Haku = ({ filterString, setFilter}) => {
+const Search = ({ filterString, setFilter}) => {
 
   const HandleFilterChange = (event) => setFilter(event.target.value)
 
@@ -20,4 +20,4 @@ const Haku = ({ filterString, setFilter}) => {
 
 }
 
-export default Haku
+export default Search
