@@ -1,14 +1,32 @@
 import React, { useState } from 'react'
+import ps from '../services/personService'
 
 const Lisaa = ({ persons, setPersons }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
-  const addName = async (event) => {
+  const addName = (event) => {
     event.preventDefault()
-    persons.filter(person => person.name === newName).length === 0
-    ? setPersons(persons.concat({ name: newName, number: newNumber })) 
-    : alert(`${newName} is already in the phonebook`)
+    if ( persons.filter(person => person.name === newName).length === 0 ){
+      ps.createPerson({ name: newName, number: newNumber })
+      .then( () => { 
+        ps.getAllPersons()
+        .then( data => {
+          setPersons(data)
+        })
+      })
+    } else {
+      if (window.confirm(`${newName} is already in the phonebook, replace the old number with ne one ?`)){
+        const person = persons.find(element => element.name === newName)
+        ps.updatePerson(person.id, { name: newName, number: newNumber })
+        .then(() => {
+          ps.getAllPersons()
+          .then( data => {
+            setPersons(data)
+          })
+        })
+      }
+    }
   }
 
   const handleNameChange = (event) => {

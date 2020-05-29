@@ -1,14 +1,23 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import Person from './person'
 
-const Numerot = ({ personToShow }) => {
+const Numerot = ({ persons, setPersons, filterString }) => {
+
+  const [personsToShow, setPersonsToShow] = useState([])
+
+  useEffect(() => {
+    console.log(persons)
+    setPersonsToShow(persons.filter( person =>
+      person.name.toLowerCase().includes(filterString.toLowerCase())
+    ))
+  },[filterString, persons] )
 
   return (
     <div>
       <h2>Numbers</h2>
       <ul>
-        {personToShow.map((person) =>
-          <Person key={person.name} name={person.name} number={person.number} />
+        {personsToShow.map((person) =>
+          <Person key={person.id} person={person} setPersons={setPersons}/>
         )}
       </ul>
     </div>
