@@ -6,7 +6,6 @@ const CountryDetails = ({ countryToShow }) => {
   const [weather, setWeather] = useState({})
 
   useEffect(() => {
-    console.log(process.env.REACT_APP_API_KEY)
     axios
       .get(`http://api.weatherstack.com/current?access_key=${process.env.REACT_APP_API_KEY}&query=${countryToShow.capital}`)
       .then(response => setWeather(response.data) || console.log(response.data))
