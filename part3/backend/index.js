@@ -10,6 +10,7 @@ app.use(express.json())
 
 morgan.token('body', req => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+app.use(express.static('build'))
 
 app.get('/info', async (req, res, next) => {
   let persons = await Person.find({})
@@ -78,13 +79,15 @@ const unknownEndpoint = (req, res) => {
 }
 app.use(unknownEndpoint)
 
-const errorHandler = (error, req, res) => {
+const errorHandler = (error, req, res, next) => {
   console.error(error.message)
   if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message })
   } else {
     return res.status(500).send({ error: 'Internal server error' })
   }
+  // eslint-disable-next-line no-unreachable
+  next(error)
 }
 app.use(errorHandler)
 
