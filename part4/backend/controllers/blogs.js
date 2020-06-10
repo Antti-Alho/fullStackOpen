@@ -1,55 +1,49 @@
 const Blog = require('../models/blog')
 const blogsRouter = require('express').Router()
 
-blogsRouter.get('/', async (req, res, next) => {
+blogsRouter.get('/', async (req, res) => {
   let blogs = await Blog.find({})
-    .catch(error => next(error))
   res.send(blogs)
 })
 
-blogsRouter.get('/:id', async (req, res, next) => {
+blogsRouter.get('/:id', async (req, res) => {
   let blog = await Blog.findById(req.params.id)
-    .catch(error => next(error))
 
   if (blog) {
     res.send(blog)
   } else {
-    res.send(404)
+    res.sendStatus(404)
   }
 })
 
-blogsRouter.delete('/:id', async (req, res, next) => {
+blogsRouter.delete('/:id', async (req, res) => {
   let blogToBeRemoved = await Blog.findByIdAndDelete(req.params.id)
-    .catch(error => next(error))
 
   if (blogToBeRemoved) {
-    res.send('blog removed')
+    res.sendStatus(204)
   } else {
     res.status(404).send({ error: 'not found' })
   }
 })
 
-blogsRouter.post('/', (req, res, next) => {
+blogsRouter.post('/', async (req, res) => {
   if (req.body === undefined) {
     return res.status(400).json({ error: 'content missing' })
   }
 
-  let blog = req.body
-  const blogToBeSaved = new Blog({ name: blog.name, number: blog.number })
-  blogToBeSaved.save()
-    .then( savedBlog => res.send(`${savedBlog} added`) )
-    .catch( error => next(error) )
+  const blogToBeSaved = new Blog( req.body )
+  let savedBlog = await blogToBeSaved.save()
+  res.send(`${savedBlog} added`)
 })
 
-blogsRouter.put('/:id', (req, res, next) => {
+blogsRouter.put('/:id', async (req, res) => {
   if (req.body === undefined) {
     return res.status(400).json({ error: 'content missing' })
   }
 
   let blog = req.body
-  Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
-    .then(modifiedBlog => res.send(`${modifiedBlog} modified`))
-    .catch(error => next(error))
+  let modifiedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
+  res.send(`${modifiedBlog} modified`)
 })
 
 module.exports = blogsRouter
