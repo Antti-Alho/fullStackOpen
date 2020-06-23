@@ -1,0 +1,11 @@
+POST http://localhost:3001/api/blogs/
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hcnkgUG9wcGVuZGllY2siLCJpZCI6IjVlZTVlY2Q4YmJkMDRjMmJlODNhNDJlOCIsImlhdCI6MTU5MjEzNzY3MH0.9aKaXn-FFD9oBwpvKao11KOA1iAq8ANZdwHZZD49AMI
+
+{
+    "title": "asdasdasdasdasdfuuugasdf",
+    "author":"asdasdasdasdasf",
+    "url": "www.asd.com",
+    "likes": 40,
+    "userId": "5ee5ecd8bbd04c2be83a42e8"
+}
