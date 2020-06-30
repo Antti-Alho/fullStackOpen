@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import loginService from '../services/login'
-import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
-const PersonForm = ({user, setUser}) => {
+const LoginForm = ( {login} ) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const handleNameChange = (event) => setUsername(event.target.value)
@@ -10,26 +9,9 @@ const PersonForm = ({user, setUser}) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let newUser = await loginService.login(username, password)
-    window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(newUser))
-    blogService.setToken(newUser.token)
-    setUser(newUser)
+    login(username, password)
     setUsername('')
     setPassword('')
-  }
-
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogAppUser')
-    blogService.setToken('')
-    setUser(null)
-  }
-  
-  if (user !== null) {
-    return (
-      <p>{user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
-    )
   }
 
   return (
@@ -57,4 +39,8 @@ const PersonForm = ({user, setUser}) => {
   )
 }
 
-export default PersonForm
+LoginForm.propTypes = {
+  login: PropTypes.func.isRequired
+}
+
+export default LoginForm

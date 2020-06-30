@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
-const BlogForm = ({user, setUser}) => {
+const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -11,8 +10,10 @@ const BlogForm = ({user, setUser}) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let response = await blogService.create({title: title, author: author, url: url})
-    console.log(response)
+    createBlog({title: title, author: author, url:url})
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
@@ -22,24 +23,27 @@ const BlogForm = ({user, setUser}) => {
         <div>
           title:
           <input
+            id='title'
             value={title}
             onChange={handleTitleChange}
           />
         </div>
         <div>Author:
           <input
+            id='author'
             value={author}
             onChange={handleAuthorChange}
           />
         </div>
         <div>Url:
           <input
+            id='url'
             value={url}
             onChange={handleUrlChange}
           />
         </div>
         <div>
-          <button type="submit">login</button>
+          <button type="submit">submit</button>
         </div>
       </form>
     </div>

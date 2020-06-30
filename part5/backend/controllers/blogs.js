@@ -2,12 +2,16 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 const getAllBlogs = async (req, res) => {
-  let blogs = await Blog.find({}).populate('user')
+  let blogs = await Blog.find({})
+    .populate('user', { userName: 1, name: 1, id: 1 } )
+
   res.send(blogs)
 }
 
 const getBlogByID = async (req, res) => {
-  let blog = await Blog.findById(req.params.id).populate('user')
+  let blog = await Blog
+    .findById(req.params.id)
+    .populate('user', { userName: 1, name: 1, id: 1 } )
 
   blog
     ? res.status(200).send(blog)
@@ -48,7 +52,10 @@ const editBlog = async (req, res) => {
     return res.status(400).json({ error: 'content missing' })
   }
 
-  let modifiedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  let modifiedBlog = await Blog
+    .findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .populate('user', { userName: 1, name: 1, id: 1 } )
+
   return res.send(`${modifiedBlog} modified`)
 }
 

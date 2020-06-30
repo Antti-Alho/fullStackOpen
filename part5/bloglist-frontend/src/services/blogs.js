@@ -15,7 +15,6 @@ const getOne = (id) => {
 }
 
 const create = newObject => {
-  console.log(token)
   const request = axios.post(baseUrl, newObject, { headers: { Authorization: token } })
   return request.then(response => response.data)
 }
