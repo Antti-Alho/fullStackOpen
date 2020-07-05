@@ -26,6 +26,7 @@ const App = () => {
   const createBlog = async ( data ) => {
     try {
       await blogService.create( data )
+      getBlogs()
       setMessage(`blog ${data.title} created`)
       setErrorStatus(false)
       setTimeout(() => setMessage(null), 5000)
@@ -57,15 +58,24 @@ const App = () => {
     blog.likes++
     blog.user = blog.user.id
     await blogService.update(id, blog)
+    getBlogs()
   }
 
   const handleBlogDelete = async (id) => {
     if (window.confirm("Do you really want to delete this blog?")) { 
       await blogService.deleteBlog(id)
+      getBlogs()
     }
   }
 
+  const getBlogs = async () => {
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
+    )
+  }
+
   useEffect(() => {
+    getBlogs()
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON !== null) {
       const user = JSON.parse(loggedUserJSON)
@@ -74,12 +84,6 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort((a,b) => b.likes - a.likes) )
-    )
-  })
-
   return (
     <div>
       <Notification 
@@ -87,20 +91,21 @@ const App = () => {
         errorStatus={errorStatus}
       />
       {user === null 
-      ? <Togglable buttonLabel="login" ref={loginToggleRef}>
+      ? <Togglable buttonLabel="login" default={true} ref={loginToggleRef}>
           <Login login={login}/>
         </Togglable>
-      : <Togglable buttonLabel="new blog" ref={blogToggleRef}>
+      : <Togglable buttonLabel="new blog" default={false} ref={blogToggleRef}>
           <BlogForm createBlog={createBlog}/>
         </Togglable>
       }
-      <h2>blogs</h2>
       {user !== null 
         ? <p>{user.name} logged in
             <button onClick={handleLogout}>logout</button>
           </p>
         : <p></p>
       }
+      <div id='blog-list'>
+      <h2>blogs</h2>
       {blogs.map(blog =>
         <Blog 
           key={blog.id}
@@ -109,6 +114,7 @@ const App = () => {
           handleDelete={() => handleBlogDelete(blog.id)}
           handleLike={() => handleLike(blog.id)} />
       )}
+      </div>
     </div>
   )
 }

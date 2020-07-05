@@ -209,6 +209,8 @@ describe('PUT request to /api/blogs/:id', () => {
   })
 })
 
-afterAll(() => {
+afterAll(async () => {
+  await Blog.deleteMany({})
+  await User.deleteMany({})
   mongoose.connection.close()
 })

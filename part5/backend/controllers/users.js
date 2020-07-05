@@ -27,7 +27,6 @@ const newUser = async (req, res) => {
   if (req.body.password.length < 3) {
     return res.status(400).json({ error: 'password is too short' })
   }
-  console.log(req.body)
 
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(req.body.password, saltRounds)
@@ -37,7 +36,7 @@ const newUser = async (req, res) => {
     passHash: passwordHash,
     blogs: []
   })
-  console.log(user)
+
   const savedUser = await user.save()
 
   res.status(200).send(`${savedUser} added`)
