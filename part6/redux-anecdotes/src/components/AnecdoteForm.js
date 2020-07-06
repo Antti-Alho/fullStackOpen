@@ -24,11 +24,9 @@ const AnecdoteForm = ( props ) => {
   )
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    createAnecdote: (content) => dispatch(createAnecdote(content)),
-    setNotification: (notification) => dispatch(setNotification(notification))
-  }
+const mapDispatchToProps = {
+  createAnecdote,
+  setNotification
 }
 
 export default connect(
