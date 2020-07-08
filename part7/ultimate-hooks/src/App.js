@@ -59,6 +59,12 @@ const App = () => {
     personService.create({ name: name.value, number: number.value})
   }
 
+  useEffect( () => {
+    noteService.getAll()
+    personService.getAll()
+    // eslint-disable-next-line
+  }, [])
+
   return (
     <div>
       <h2>notes</h2>
