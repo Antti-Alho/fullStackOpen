@@ -21,8 +21,6 @@ blogsRouter.post(
 
 blogsRouter.put(
   '/:id',
-  checkJWT,
-  checkPermission,
   blogController.editBlog
 )
 

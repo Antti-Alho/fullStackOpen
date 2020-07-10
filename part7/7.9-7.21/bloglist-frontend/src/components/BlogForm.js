@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
+import { createBlog } from '../reducers/blogReducer'
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../reducers/notificationReducer'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = () => {
+
+  const dispatch = useDispatch()
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -10,11 +15,17 @@ const BlogForm = ({ createBlog }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    createBlog({title: title, author: author, url:url})
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    try {
+      dispatch(createBlog({ title: title, author: author, url: url }))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      dispatch(setNotification(`blog ${title} created`, false))
+    } catch (error) {
+      dispatch(setNotification(`something went wrong :-(`, true))
+    }
   }
+
 
   return (
     <div>
