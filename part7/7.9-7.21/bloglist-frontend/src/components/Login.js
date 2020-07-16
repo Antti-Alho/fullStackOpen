@@ -1,53 +1,59 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import { login } from '../reducers/loginReducer'
+import { useDispatch } from 'react-redux'
+import { useField } from '../hooks/field'
+import { useHistory } from "react-router-dom"
+
+import Card from 'react-bootstrap/Card'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
+
 
 const LoginForm = () => {
 
+  const history = useHistory()
+  const username = useField('text')
+  const password = useField('text')
+
   const dispatch = useDispatch()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const handleNameChange = (event) => setUsername(event.target.value)
-  const handlePWChange = (event) => setPassword(event.target.value)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    dispatch(login(username, password))
-    setUsername('')
-    setPassword('')
+    dispatch(login(username.value, password.value))
+    username.onReset()
+    password.onReset()
+    history.push('/blogs')
   }
 
-
-
   return (
-    <div>
-      <h2>Login</h2>
-      <form id="login-form" onSubmit={handleSubmit}>
-        <div>
-          Username:
-          <input
-            id="username-input"
-            value={username}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>Password:
-          <input
-            id="password-input"
-            value={password}
-            onChange={handlePWChange}
-          />
-        </div>
-        <div>
-          <button id="login-button" type="submit">login</button>
-        </div>
-      </form>
-    </div>
+    <Container>
+      <Row className="justify-content-md-center">
+        <Col md="auto">
+          <Card bg={'dark'} text={'light'} className="justify-content-md-center" style={{ marginTop: '25%' }}>
+            <Card.Body>
+              <Card.Title>Login</Card.Title>
+              <Form id="login-form" onSubmit={handleSubmit}>
+                <Card.Text>
+                  <Row>
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control {...username}/>
+                  </Row>
+                  <Row>
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control {...password}/>
+                  </Row>
+                </Card.Text>
+                <Button id="login-button" variant="primary" type="submit">  login</Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   )
-}
-
-LoginForm.propTypes = {
-  login: PropTypes.func.isRequired
 }
 
 export default LoginForm

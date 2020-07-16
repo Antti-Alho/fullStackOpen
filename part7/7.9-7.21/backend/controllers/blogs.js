@@ -3,7 +3,8 @@ const User = require('../models/user')
 
 const getAllBlogs = async (req, res) => {
   let blogs = await Blog.find({})
-    .populate('User', { userName: 1, name: 1, id: 1 } )
+    .populate('user', { userName: 1, name: 1, id: 1 } )
+    .populate('comments')
 
   res.send(blogs)
 }
@@ -12,6 +13,7 @@ const getBlogByID = async (req, res) => {
   let blog = await Blog
     .findById(req.params.id)
     .populate('User', { userName: 1, name: 1, id: 1 } )
+    .populate('comments')
 
   blog
     ? res.status(200).send(blog)
@@ -37,7 +39,8 @@ const newBlog = async (req, res) => {
     author: req.body.author,
     url: req.body.url,
     likes: req.body.likes === undefined ? 0 : req.body.likes,
-    user: user._id
+    user: user._id,
+    comments: req.body.comments === undefined ? [] : req.body.comments,
   } )
   let savedBlog = await blogToBeSaved.save()
 
@@ -54,7 +57,6 @@ const editBlog = async (req, res) => {
 
   let modifiedBlog = await Blog
     .findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .populate('User', { userName: 1, name: 1, id: 1 } )
 
   return res.send(`${modifiedBlog} modified`)
 }

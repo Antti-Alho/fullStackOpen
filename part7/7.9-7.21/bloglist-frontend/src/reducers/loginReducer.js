@@ -1,30 +1,53 @@
-let lastNotificationID
+import loginService from '../services/login'
+import blogService from '../services/blogs'
 
-const reducer = (state = { message: null, errorStatus: false }, action) => {
+const reducer = (state = null, action) => {
   switch (action.type) {
-    case 'SET_NOTIFICATION':
+    case 'LOGOUT':
+      return action.data
+    case 'LOGIN':
+      return action.data
+    case 'SET_FROM_LOCALSTORAGE':
       return action.data
     default: return state
   }
 }
 
-export const setNotification = (notification, errorStatus) => {
+export const logout = () => {
   return async dispatch => {
+    window.localStorage.removeItem('loggedBlogAppUser')
     dispatch({
-      type: 'SET_NOTIFICATION',
-      data: { message: notification, errorStatus: errorStatus },
+      type: 'LOGOUT',
+      data: null,
     })
-    if (lastNotificationID) {
-      clearTimeout(lastNotificationID)
-    }
-    lastNotificationID = setTimeout(() => {
-      dispatch({
-        type: 'SET_NOTIFICATION',
-        data: { message: null, errorStatus: false },
-      })
-    }, 5000)
   }
 }
 
+export const login = (username, password) => {
+  return async dispatch => {
+    const user = await loginService.login(username, password)
+    blogService.setToken(user.token)
+    window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+    dispatch({
+      type: 'LOGIN',
+      data: user,
+    })
+  }
+}
+
+export const setUserFromStorage = () => {
+  return async dispatch => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    let user = null
+    if (loggedUserJSON !== null) {
+      user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
+      dispatch({
+        type: 'SET_FROM_LOCALSTORAGE',
+        data: user,
+      })
+    }
+  }
+}
 
 export default reducer

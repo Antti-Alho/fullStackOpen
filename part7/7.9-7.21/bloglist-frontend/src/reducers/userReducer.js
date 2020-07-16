@@ -8,10 +8,6 @@ const reducer = (state = [], action) => {
       return action.data
     case 'DELETE_USER':
       return action.data
-    case 'LOGIN':
-      return ''
-    case 'LOGOUT':
-      return ''
     default: return state
   }
 }
@@ -27,7 +23,7 @@ export const createUser = (content) => {
   }
 }
 
-export const initusers = () => {
+export const initUsers = () => {
   return async dispatch => {
     const users = await userService.getAll()
     dispatch({
