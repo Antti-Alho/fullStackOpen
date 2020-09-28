@@ -1,4 +1,6 @@
 export const calculateBmi = (height: number, weight: number): string => {
+  
+  if (isNaN(weight) || isNaN(height)) throw new Error('malformatted parameters');
   height = height * 0.01;
   const bmi: number = (weight/(height*height));
 
@@ -23,13 +25,15 @@ export const calculateBmi = (height: number, weight: number): string => {
   }
 };
 
-export const parseArgs = (argv: Array<string>): string => {
-  const list: number[] = argv.slice(2).map(n => Number(n));
-  if (list.some((n) => !isNaN(n))) {
-    return calculateBmi(list[0], list[1]);
+const list: number[] = process.argv.slice(2).map(n => Number(n));
+try {
+  if(!list) throw new Error('Need some params to work with!')
+  if (list.every((n) => !isNaN(n))) {
+    console.log(calculateBmi(list[0], list[1]));
   } else {
     throw new Error('Not a number >:(');
   }
-};
-
-export default { calculateBmi };
+} catch (e) {
+  if (e instanceof Error) console.log('Error, something bad happened, message: ', e.message);
+  else throw e;
+}

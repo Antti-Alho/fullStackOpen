@@ -4,15 +4,14 @@ import { Diagnose } from '../types';
 
 const diagnoses: Array<Diagnose> = diagnoseData as Array<Diagnose>;
 
-const getAll = (_req: Request, res: Response) => {
-  console.log("asd")
-  res.send(diagnoses)
+const getAll = (_req: Request, res: Response): void => {
+  res.send(diagnoses);
 };
 
-const addEntry = (req: Request, res: Response) => {
+const addEntry = (req: Request, res: Response): void => {
   const newDiagnose: Diagnose = req.body as Diagnose;
   diagnoses.push(newDiagnose);
-  res.send(204)
+  res.send(204);
 };
 
 export default {

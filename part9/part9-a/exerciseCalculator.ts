@@ -35,30 +35,30 @@ const getRating = (average: number, target: number): Rating => {
 };
 
 export const calculateExercises = (dailyHours: Array<number>, target: number): ExerciseCalculation => {
-  const average = sum(dailyHours)/dailyHours.length;
-  const rating = getRating(average, target);
-  return {
-    periodLength: dailyHours.length,
-    trainingDays: dailyHours.filter(h => h > 0).length,
-    success: dailyHours.find(hour => hour < target) === undefined,
-    rating: rating.rating,
-    ratingDescription: rating.disc,
-    target: target,
-    average: average
-  };
+  if (dailyHours.every((n) => !isNaN(n)) && !isNaN(target)) {
+    const average = sum(dailyHours)/dailyHours.length;
+    const rating = getRating(average, target);
+    return {
+      periodLength: dailyHours.length,
+      trainingDays: dailyHours.filter(h => h > 0).length,
+      success: dailyHours.find(hour => hour < target) === undefined,
+      rating: rating.rating,
+      ratingDescription: rating.disc,
+      target: target,
+      average: average
+    };
+  } else {
+    throw new Error('All parameters should be numbers!');
+  }
 };
 
 try {
   const list: number[] = process.argv.slice(2).map(n => Number(n));
-  if (list.some((n) => !isNaN(n))) {
-    const target = list.reverse().pop();
-    if (target) {
-      console.log(calculateExercises(list, target));
-    } else {
-      throw new Error('I need some params to work with!');
-    }
+  const target = list.reverse().pop();
+  if (target) {
+    console.log(calculateExercises(list, target));
   } else {
-    throw new Error('Not a number >:(');
+    throw new Error('need some params to work with!');
   }
 } catch (e) {
   if (e instanceof Error) console.log('Error, something bad happened, message: ', e.message);
